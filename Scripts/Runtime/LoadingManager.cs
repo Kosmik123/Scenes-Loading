@@ -112,10 +112,12 @@ namespace Bipolar.SceneManagement
             var scenesToUnload = new List<Scene>();
             var scenesToLoadIndices = new List<int>();
             UnloadUnneededScenes(context, scenesToUnload, scenesToLoadIndices);
-
-
+            
+            progress = 0;
+            isLoading = true;
             OnLoadingStarted?.Invoke(context);
 
+            sceneLoadOperations.Clear();
             for (int i = 0; i < scenesToLoadIndices.Count; i++)
             {
                 int scene = scenesToLoadIndices[i];
@@ -157,10 +159,6 @@ namespace Bipolar.SceneManagement
                     scenesToLoadIndices.Add(scene.BuildIndex);
                 }
             }
-
-            sceneLoadOperations.Clear();
-            progress = 0;
-            isLoading = true;
         }
 
         private IEnumerator LoadingProcessCo(int activeSceneIndex)
