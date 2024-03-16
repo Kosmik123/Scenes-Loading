@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Bipolar.SceneManagement
+namespace Bipolar.SceneManagement.UI
 {
-    public class LoadingScreenWithSlider: LoadingScreen
+    public class LoadingScreenWithSlider : LoadingScreen
     {
         [SerializeField]
         private Slider progressBar;
 
-        protected override void OnSetProgress(float progress)
+        protected override void OnLoadingProgressChanged(float progress)
         {
-            base.OnSetProgress(progress);
+            base.OnLoadingProgressChanged(progress);
             progressBar.maxValue = 1;
             progressBar.minValue = 0;
             progressBar.value = progress;

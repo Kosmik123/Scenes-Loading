@@ -25,6 +25,7 @@ namespace Bipolar.SceneManagement
 
         public event ContextLoadingEventHandler OnLoadingStarted;
         public event ContextLoadingEventHandler OnLoadingEnded;
+        public event System.Action<float> OnLoadingProgressChanged;
 
         public static LoadingManager Instance { get; private set; }
 
@@ -80,7 +81,7 @@ namespace Bipolar.SceneManagement
             {
                 SceneManager.LoadScene(0, LoadSceneMode.Additive);
             }
-            else if (SceneManager.sceneCount == 1) // starting from Main
+            else if (SceneManager.sceneCount == 1) // starting from InitScene
             {
                 if (initialScenesContext)
                 {

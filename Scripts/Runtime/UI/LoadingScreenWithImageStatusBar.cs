@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Bipolar.SceneManagement
+namespace Bipolar.SceneManagement.UI
 {
     public class LoadingScreenWithImageStatusBar : LoadingScreen
     {
         [SerializeField]
         private Image progressBar;
 
-        protected override void OnSetProgress(float progress)
+        protected override void OnLoadingProgressChanged(float progress)
         {
-            base.OnSetProgress(progress);
+            base.OnLoadingProgressChanged(progress);
             progressBar.fillAmount = progress;
         }
     }
