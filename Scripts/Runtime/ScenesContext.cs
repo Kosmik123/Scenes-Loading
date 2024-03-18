@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,7 +16,9 @@ namespace Bipolar.SceneManagement
     [System.Serializable]
     public struct SceneData
     {
+        [field: SerializeField]
         public int BuildIndex { get; private set; }
+        //[field: SerializeField]
         //public LocalPhysicsMode LocalPhysicsMode { get; private set; }
 
         public SceneData(int buildIndex, LocalPhysicsMode physicsMode = LocalPhysicsMode.None)
@@ -27,8 +28,13 @@ namespace Bipolar.SceneManagement
         }
     }
 
-    [CreateAssetMenu(menuName = "Scene Management/Level Settings", order = 2)]
-    public class ScenesContext : ScriptableObject
+    public static class CreateAssetPath
+    {
+        public const string Root = "Bipolar/Scene Management/";
+    }
+
+    [CreateAssetMenu(menuName = CreateAssetPath.Root + "Scenes Context", order = 2)]
+    public class ScenesContext : ScriptableObject 
     {
 #if UNITY_EDITOR
         [SerializeField]
