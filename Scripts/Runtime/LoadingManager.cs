@@ -106,7 +106,7 @@ namespace Bipolar.SceneManagement
             return false;
         }
 
-        public static void LoadContext(ScenesContext context) => Instance.LoadContextInternal(context);
+        public void LoadContext(ScenesContext context) => Instance.LoadContextInternal(context);
 
         private void LoadContextInternal(ScenesContext context)
         {

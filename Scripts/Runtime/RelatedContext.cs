@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Bipolar.SceneManagement
 {
+    [DisallowMultipleComponent]
     public class RelatedContext : MonoBehaviour
     {
         [SerializeField]
@@ -28,10 +29,9 @@ namespace Bipolar.SceneManagement
         {
             LoadingManager.OnLoadingEnded -= LoadContext;
             LoadingManager.OnInstanceCreated -= LoadContext;
-
             if (LoadingManager.Instance.CurrentContext != context)
             {
-                LoadingManager.LoadContext(context);
+                LoadingManager.Instance.LoadContext(context);
             }
         }
     } 
