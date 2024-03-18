@@ -23,14 +23,16 @@ namespace Bipolar.SceneManagement
     {
         private const string PrefabName = "Loading Manager";
 
-        public event ContextLoadingEventHandler OnLoadingStarted;
-        public event ContextLoadingEventHandler OnLoadingEnded;
-        public event System.Action<float> OnLoadingProgressChanged;
+        public static event System.Action OnLoadingStarted;
+        public static event System.Action OnLoadingEnded;
+        public static event System.Action<float> OnLoadingProgressChanged;
+
+        internal static event System.Action OnInstanceCreated;
 
         public static LoadingManager Instance { get; private set; }
 
-        [SerializeField]
-        private GlobalScenesContext globalScenesContext;
+        //[SerializeField]
+        //private GlobalScenesContext globalScenesContext;
 
         [Space, SerializeField]
         private ScenesContext initialScenesContext;
@@ -44,6 +46,7 @@ namespace Bipolar.SceneManagement
         public float Progress => progress;
 
         private ScenesContext currentContext;
+        public ScenesContext CurrentContext => currentContext;
 
         private readonly List<AsyncOperation> sceneLoadOperations = new List<AsyncOperation>();
         private readonly List<IInitializer> initializers = new List<IInitializer>();
@@ -54,9 +57,12 @@ namespace Bipolar.SceneManagement
             var loadingManagerRequest = Resources.LoadAsync(PrefabName);
             loadingManagerRequest.completed += operation =>
             {
-                var prefab = loadingManagerRequest.asset;
-                var loadingManager = Instantiate(prefab);
-                loadingManager.name = PrefabName;
+                if (loadingManagerRequest.asset is GameObject prefab)
+                {
+                    Instance = Instantiate(prefab).GetComponent<LoadingManager>();
+                    Instance.name = PrefabName;
+                    OnInstanceCreated?.Invoke(); 
+                }
             };
         }
 
@@ -88,6 +94,7 @@ namespace Bipolar.SceneManagement
                     LoadContext(initialScenesContext);
                 }
             }
+            OnInstanceCreated = null;
         }
 
         public bool IsInitSceneLoaded()
@@ -109,13 +116,15 @@ namespace Bipolar.SceneManagement
                 return;
             }
 
+            progress = 0;
+            isLoading = true;
+
             var scenesToUnload = new List<Scene>();
             var scenesToLoadIndices = new List<int>();
             UnloadUnneededScenes(context, scenesToUnload, scenesToLoadIndices);
             
-            progress = 0;
-            isLoading = true;
-            OnLoadingStarted?.Invoke(context);
+            currentContext = context;
+            OnLoadingStarted?.Invoke();
 
             sceneLoadOperations.Clear();
             for (int i = 0; i < scenesToLoadIndices.Count; i++)
@@ -136,7 +145,7 @@ namespace Bipolar.SceneManagement
             StartCoroutine(LoadingProcessCo(activeSceneIndex));
         }
 
-        private void UnloadUnneededScenes(ScenesContext context, List<Scene> scenesToUnload, List<int> scenesToLoadIndices)
+        private void UnloadUnneededScenes(ScenesContext newContext, List<Scene> scenesToUnload, List<int> scenesToLoadIndices)
         {
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
@@ -146,9 +155,9 @@ namespace Bipolar.SceneManagement
                     scenesToUnload.Add(scene);
             }
 
-            for (int i = 0; i < context.Scenes.Count; i++)
+            for (int i = 0; i < newContext.Scenes.Count; i++)
             {
-                var scene = context.Scenes[i];
+                var scene = newContext.Scenes[i];
                 int index = scenesToUnload.FindIndex(s => s.buildIndex == scene.BuildIndex);
                 if (index >= 0)
                 {
@@ -180,6 +189,7 @@ namespace Bipolar.SceneManagement
                 }
                 scenesLoadProgress /= scenesCount;
                 progress = scenesLoadProgress / 2;
+                OnLoadingProgressChanged?.Invoke(progress);
             }
             Resources.UnloadUnusedAssets();
 
@@ -202,15 +212,29 @@ namespace Bipolar.SceneManagement
 
                 // float totalProgress = (scenesLoadProgress + initializationProgress) / 2;
                 progress = 0.5f + initializationProgress / 2;
+                OnLoadingProgressChanged?.Invoke(progress);
             }
 
             initializers.Clear();
             progress = 1;
+            OnLoadingProgressChanged?.Invoke(progress);
+            
             isLoading = false;
-            OnLoadingEnded?.Invoke(currentContext);
+            yield return new WaitForSeconds(0.1f);
+            OnLoadingEnded?.Invoke();
         }
 
-        internal static void AddInitializer(IInitializer initializer) => Instance.InternalAddInitializer(initializer);
+        internal static void AddInitializer(IInitializer initializer)
+        {
+            if (Instance)
+            {
+                Instance.InternalAddInitializer(initializer);
+            }
+            else
+            {
+                OnInstanceCreated += () => Instance.InternalAddInitializer(initializer);
+            }
+        }
 
         private void InternalAddInitializer(IInitializer initializer)
         {
