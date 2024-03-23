@@ -8,15 +8,22 @@ namespace Bipolar.SceneManagement.UI
         [SerializeField]
         private Image progressBar;
 
+        private float targetProgress;
+
         private void OnEnable()
         {
-            progressBar.fillAmount = LoadingManager.Instance.Progress;
+            progressBar.fillAmount = targetProgress = LoadingManager.Progress;
             LoadingManager.OnLoadingProgressChanged += OnLoadingProgressChanged;
+        }
+
+        private void Update()
+        {
+            progressBar.fillAmount = Mathf.MoveTowards(progressBar.fillAmount, targetProgress, Time.deltaTime);
         }
 
         private void OnLoadingProgressChanged(float progress)
         {
-            progressBar.fillAmount = progress;
+            targetProgress = progress;
         }
 
         private void OnDisable()

@@ -6,9 +6,11 @@ namespace Bipolar.SceneManagement.UI
     {
         private void Awake()
         {
-            var methodToCall = LoadingManager.Instance.IsLoading ? (System.Action)OnLoadingStarted : OnLoadingEnded;
-            methodToCall.Invoke();
-
+            if (LoadingManager.Instance)
+            {
+                var methodToCall = LoadingManager.Instance.IsLoading ? (System.Action)OnLoadingStarted : OnLoadingEnded;
+                methodToCall.Invoke();
+            }
             LoadingManager.OnLoadingStarted += OnLoadingStarted;
             LoadingManager.OnLoadingEnded += OnLoadingEnded;
         }

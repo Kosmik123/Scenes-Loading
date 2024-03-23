@@ -10,7 +10,7 @@ namespace Bipolar.SceneManagement
 
         private void Awake()
         {
-            if (LoadingManager.Instance == null)
+            if (LoadingManager.Instance == null) 
             {
                 LoadingManager.OnInstanceCreated += LoadContext;
             }
@@ -27,8 +27,8 @@ namespace Bipolar.SceneManagement
 
         private void LoadContext()
         {
-            LoadingManager.OnLoadingEnded -= LoadContext;
             LoadingManager.OnInstanceCreated -= LoadContext;
+            LoadingManager.OnLoadingEnded -= LoadContext;
             if (LoadingManager.Instance.CurrentContext != context)
             {
                 LoadingManager.Instance.LoadContext(context);

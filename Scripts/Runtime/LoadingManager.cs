@@ -43,7 +43,7 @@ namespace Bipolar.SceneManagement
 
         [SerializeField]
         private float progress;
-        public float Progress => progress;
+        public static float Progress => Instance == null ? 0 : Instance.progress;
 
         private ScenesContext currentContext;
         public ScenesContext CurrentContext => currentContext;
@@ -220,7 +220,6 @@ namespace Bipolar.SceneManagement
             OnLoadingProgressChanged?.Invoke(progress);
             
             isLoading = false;
-            yield return new WaitForSeconds(0.1f);
             OnLoadingEnded?.Invoke();
         }
 
@@ -228,15 +227,17 @@ namespace Bipolar.SceneManagement
         {
             if (Instance)
             {
-                Instance.InternalAddInitializer(initializer);
+                Instance.AddInitializerInternal(initializer);
             }
+#if UNITY_EDITOR
             else
             {
-                OnInstanceCreated += () => Instance.InternalAddInitializer(initializer);
+                OnInstanceCreated += () => Instance.AddInitializerInternal(initializer);
             }
+#endif
         }
 
-        private void InternalAddInitializer(IInitializer initializer)
+        private void AddInitializerInternal(IInitializer initializer)
         {
             if (isLoading == false)
                 return;
