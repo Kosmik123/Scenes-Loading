@@ -5,24 +5,10 @@ using UnityEngine.SceneManagement;
 
 namespace Bipolar.SceneManagement
 {
-    [System.Serializable]
-    public class GlobalScenesContext
-    {
-        [SerializeField]
-        private bool useGlobalScenesContext;
-        public bool UseGlobalScenesContext => useGlobalScenesContext;
-
-        [SerializeField]
-        private ScenesContext context;
-        public ScenesContext Context => context;
-    }
-
     public delegate void ContextLoadingEventHandler(ScenesContext context);
-
+    
     public class LoadingManager : MonoBehaviour
     {
-        private const string PrefabName = "Loading Manager";
-
         public static event System.Action OnLoadingStarted;
         public static event System.Action OnLoadingEnded;
         public static event System.Action<float> OnLoadingProgressChanged;
@@ -30,12 +16,7 @@ namespace Bipolar.SceneManagement
         internal static event System.Action OnInstanceCreated;
 
         public static LoadingManager Instance { get; private set; }
-
-        //[SerializeField]
-        //private GlobalScenesContext globalScenesContext;
-
-        [Space, SerializeField]
-        private ScenesContext initialScenesContext;
+        public LoadingManagerSettings Settings { get; private set; }
 
         [SerializeField]
         private bool isLoading;
@@ -54,15 +35,17 @@ namespace Bipolar.SceneManagement
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
-            var loadingManagerRequest = Resources.LoadAsync(PrefabName);
-            loadingManagerRequest.completed += operation =>
+            var settingsRequest = Resources.LoadAsync(LoadingManagerSettings.AssetName);
+            settingsRequest.completed += operation =>
             {
-                if (loadingManagerRequest.asset is GameObject prefab)
+                var loadingManager = new GameObject().AddComponent<LoadingManager>();
+                loadingManager.name = "Loading Manager";
+                if (settingsRequest.asset is LoadingManagerSettings settings)
                 {
-                    Instance = Instantiate(prefab).GetComponent<LoadingManager>();
-                    Instance.name = PrefabName;
-                    OnInstanceCreated?.Invoke(); 
+                    loadingManager.Settings = settings; 
                 }
+                Instance = loadingManager;
+                OnInstanceCreated?.Invoke();
             };
         }
 
@@ -89,9 +72,9 @@ namespace Bipolar.SceneManagement
             }
             else if (SceneManager.sceneCount == 1) // starting from InitScene
             {
-                if (initialScenesContext)
+                if (Settings && Settings.InitialScenesContext)
                 {
-                    LoadContext(initialScenesContext);
+                    LoadContext(Settings.InitialScenesContext);
                 }
             }
             OnInstanceCreated = null;
