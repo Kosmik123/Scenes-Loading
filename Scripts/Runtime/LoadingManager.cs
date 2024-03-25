@@ -55,7 +55,7 @@ namespace Bipolar.SceneManagement
             {
                 Instance = this;
                 isLoading = false;
-                progress = 0;
+                progress = 1;
                 DontDestroyOnLoad(this);
             }
             else if (Instance != this)

@@ -24,14 +24,14 @@ namespace Bipolar.SceneManagement
             }
         }
 
-
         private void LoadContext()
         {
             LoadingManager.OnInstanceCreated -= LoadContext;
             LoadingManager.OnLoadingEnded -= LoadContext;
             if (LoadingManager.Instance.CurrentContext != context)
             {
-                LoadingManager.Instance.LoadContext(context);
+                if (context != null) 
+                    LoadingManager.Instance.LoadContext(context);
             }
         }
     } 
