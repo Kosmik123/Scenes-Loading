@@ -4,13 +4,14 @@ using UnityEngine.SceneManagement;
 
 namespace Bipolar.SceneManagement.Editor
 {
-    [CustomPropertyDrawer(typeof(SceneWithPhysics))]
-    public class SceneWithPhysicsDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(SceneReference))]
+    public class SceneReferenceDrawer : PropertyDrawer
     {
         private const string scenePropertyName = "Scene";
         private readonly float scenePropertyHeight = EditorGUIUtility.singleLineHeight;
         private readonly float physicsPropertyHeight = EditorGUIUtility.singleLineHeight;
         private const float warningHelpboxHeight = 38;
+        private readonly float addSceneToBuildSettingsButtonHeight = 20;
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -22,8 +23,21 @@ namespace Bipolar.SceneManagement.Editor
             var sceneProperty = property.FindPropertyRelative(scenePropertyName);
             var sceneAsset = sceneProperty.objectReferenceValue as SceneAsset;
 
-            if (sceneAsset == null || GetSceneIndex(sceneAsset) <= 0) 
+            if (sceneAsset == null)
+            {
                 height += warningHelpboxHeight + EditorGUIUtility.standardVerticalSpacing;
+            }
+            else
+            {
+                int sceneIndex = GetSceneIndex(sceneAsset);
+                if (sceneIndex <= 0)
+                {
+                    height += warningHelpboxHeight + EditorGUIUtility.standardVerticalSpacing;
+                    if (sceneIndex < 0)    
+                        height += addSceneToBuildSettingsButtonHeight + EditorGUIUtility.standardVerticalSpacing;
+                }
+            }
+
             return height;
         }
 
@@ -49,19 +63,34 @@ namespace Bipolar.SceneManagement.Editor
                 if (sceneAsset == null)
                 {
                     rect.height = warningHelpboxHeight;
-                    EditorGUI.HelpBox(rect, "Scene is missing!", MessageType.Error);
+                    EditorGUI.HelpBox(rect, "Scene is missing", MessageType.Error);
                     rect.y += warningHelpboxHeight + EditorGUIUtility.standardVerticalSpacing;
                 }
                 else 
                 { 
                     int sceneIndex = GetSceneIndex(sceneAsset);
-                    if (sceneIndex <= 0)
+                    if (sceneIndex < 0)
                     {
                         rect.height = warningHelpboxHeight;
-                        string message = sceneIndex < 0
-                            ? $"Scene {sceneAsset.name} is not added in Build Settings"
-                            : "Scene index is zero";
-
+                        string message = $"Scene {sceneAsset.name} is not added in Build Settings";
+     
+                        EditorGUI.HelpBox(rect, message, MessageType.Error);
+                        rect.y += warningHelpboxHeight + EditorGUIUtility.standardVerticalSpacing;
+                        rect.height = addSceneToBuildSettingsButtonHeight;
+                        if (GUI.Button(rect, "Add scene to Build Settings"))
+                        {
+                            var scenePath = AssetDatabase.GetAssetPath(sceneAsset);
+                            int oldScenesCount = EditorBuildSettings.scenes.Length;
+                            var newScenes = new EditorBuildSettingsScene[oldScenesCount + 1];
+                            System.Array.Copy(EditorBuildSettings.scenes, newScenes, oldScenesCount);
+                            newScenes[oldScenesCount] = new EditorBuildSettingsScene(scenePath, true);
+                            EditorBuildSettings.scenes = newScenes;
+                        }
+                    }
+                    else if (sceneIndex == 0)
+                    {
+                        rect.height = warningHelpboxHeight;
+                        string message = "Scene Build Index = 0. Index 0 is reserved for initial scene which cannot be contained in contexts";
                         EditorGUI.HelpBox(rect, message, MessageType.Error);
                         rect.y += warningHelpboxHeight + EditorGUIUtility.standardVerticalSpacing;
                     }

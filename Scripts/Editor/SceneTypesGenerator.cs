@@ -84,6 +84,7 @@ namespace Bipolar.SceneManagement.Editor
 
         private static void Generate(string content) 
         {
+            return;
             AssetDatabase.MakeEditable(FilePath);
             File.WriteAllText(FilePath, content);
             AssetDatabase.ImportAsset(FilePath);

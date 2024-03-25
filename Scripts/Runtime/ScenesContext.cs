@@ -6,7 +6,7 @@ namespace Bipolar.SceneManagement
 {
 #if UNITY_EDITOR
     [System.Serializable]
-    public class SceneWithPhysics
+    public class SceneReference
     {
         public UnityEditor.SceneAsset Scene;
         //public LocalPhysicsMode LocalPhysicsMode;
@@ -38,7 +38,7 @@ namespace Bipolar.SceneManagement
     {
 #if UNITY_EDITOR
         [SerializeField]
-        private SceneWithPhysics[] scenes;
+        private SceneReference[] scenes;
 #endif
         [SerializeField, HideInInspector]
         private SceneData[] scenesData;
@@ -58,7 +58,7 @@ namespace Bipolar.SceneManagement
         [ContextMenu("Validate Scenes")]
         public void SerializeScenesIndices()
         {
-            var scenesList = new List<SceneWithPhysics>(scenes);
+            var scenesList = new List<SceneReference>(scenes);
             var sceneDatasList = new List<SceneData>();
 
             for (int i = scenesList.Count - 1; i >= 0; i--)
@@ -73,7 +73,7 @@ namespace Bipolar.SceneManagement
                 int buildIndex = GetSceneIndex(data.Scene);
                 if (buildIndex == 0)
                 {
-                    Debug.LogWarning("Scene with index 0 is default scene and will be always loaded!");
+                    Debug.LogWarning("Scene with index 0 is init scene and will be always loaded!");
                     continue;
                 }
                 else if (buildIndex < 0)
