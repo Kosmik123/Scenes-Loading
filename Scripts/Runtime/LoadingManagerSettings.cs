@@ -14,7 +14,7 @@ namespace Bipolar.SceneManagement
         public ScenesContext Context => context;
     }
 
-    [CreateAssetMenu(menuName = CreateAssetPath.Root + "Loading Manager Settings", fileName = LoadingManagerSettings.AssetName)]
+    [CreateAssetMenu(menuName = CreateAssetPath.Root + "Loading Manager Settings", fileName = AssetName)]
     public class LoadingManagerSettings : ScriptableObject
     {
         public const string AssetName = "Loading Manager Settings";
