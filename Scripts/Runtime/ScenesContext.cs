@@ -54,6 +54,7 @@ namespace Bipolar.SceneManagement
             }
         }
 
+#region Editor Code
 #if UNITY_EDITOR
         [ContextMenu("Validate Scenes")]
         public void SerializeScenesIndices()
@@ -103,7 +104,7 @@ namespace Bipolar.SceneManagement
         {
             if (Application.isPlaying)
             {
-
+                LoadingManager.Instance.LoadContext(this);
             }
             else 
             {
@@ -140,8 +141,6 @@ namespace Bipolar.SceneManagement
                 }
             }
         }
-
-
 #endif
         private void OnValidate()
         {
@@ -152,5 +151,16 @@ namespace Bipolar.SceneManagement
             }
 #endif
         }
+#endregion
+
     }
+
+    public static class ScenesContextExtensions
+    {
+        public static void LoadContext(this ScenesContext context)
+        {
+        }
+    }
+
+
 }
