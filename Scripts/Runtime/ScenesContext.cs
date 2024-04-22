@@ -28,11 +28,6 @@ namespace Bipolar.SceneManagement
         }
     }
 
-    public static class CreateAssetPath
-    {
-        public const string Root = "Bipolar/Scene Management/";
-    }
-
     [CreateAssetMenu(menuName = CreateAssetPath.Root + "Scenes Context", order = 2)]
     public class ScenesContext : ScriptableObject 
     {
@@ -53,7 +48,6 @@ namespace Bipolar.SceneManagement
                 return scenesData;
             }
         }
-
 #region Editor Code
 #if UNITY_EDITOR
         [ContextMenu("Validate Scenes")]
@@ -100,11 +94,11 @@ namespace Bipolar.SceneManagement
         }
 
         [ContextMenu("Load Context")]
-        private void LoadContext()
+        private void LoadContextInEditor()
         {
             if (Application.isPlaying)
             {
-                LoadingManager.Instance.LoadContext(this);
+                this.LoadContext();
             }
             else 
             {
@@ -152,15 +146,13 @@ namespace Bipolar.SceneManagement
 #endif
         }
 #endregion
-
     }
 
     public static class ScenesContextExtensions
     {
-        public static void LoadContext(this ScenesContext context)
+        public static void LoadContext(this ScenesContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
         {
+            LoadingManager.Instance.LoadContext(context, loadingStrategy, forced);
         }
     }
-
-
 }
