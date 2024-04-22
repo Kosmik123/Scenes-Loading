@@ -15,7 +15,7 @@ namespace Bipolar.SceneManagement.Editor
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            float height = EditorGUIUtility.singleLineHeight;
+            float height = EditorGUIUtility.singleLineHeight + 1;
             if (property.isExpanded == false)
                 return height;
 
