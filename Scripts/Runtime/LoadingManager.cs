@@ -93,6 +93,12 @@ namespace Bipolar.SceneManagement
                 {
                     LoadContext(Settings.InitialScenesContext, forced: true);
                 }
+                else
+                {
+                    isLoading = false;
+                    progress = 1;
+                    OnLoadingEnded?.Invoke();
+                }
             }
             OnInstanceCreated = null;
         }
