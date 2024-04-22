@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6f7c807694e1ef49956c140522cef7a, type: 3}
   m_Name: Loading Manager Settings
   m_EditorClassIdentifier: 
-  initialScenesContext: {fileID: 0}
+  initialScenesContext: {fileID: 11400000, guid: 0ca2d6b9cb5ed414e9b1b34386a25e67,
+    type: 2}
+  loadingStrategy: {fileID: 0}
   globalScenesContext:
     useGlobalScenesContext: 0
     context: {fileID: 0}
