@@ -15,4 +15,8 @@ namespace Bipolar.SceneManagement
             timer += Time.deltaTime;
         }
     }
+
+    public abstract class LoadingStrategy : ScriptableObject
+    {
+    }
 }

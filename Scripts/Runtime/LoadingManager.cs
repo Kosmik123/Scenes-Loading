@@ -74,7 +74,7 @@ namespace Bipolar.SceneManagement
             {
                 if (Settings && Settings.InitialScenesContext)
                 {
-                    LoadContext(Settings.InitialScenesContext);
+                    LoadContext(Settings.InitialScenesContext, forced: true);
                 }
             }
             OnInstanceCreated = null;
@@ -89,10 +89,19 @@ namespace Bipolar.SceneManagement
             return false;
         }
 
-        public void LoadContext(ScenesContext context) => Instance.LoadContextInternal(context);
-
-        private void LoadContextInternal(ScenesContext context)
+        public void LoadContext(ScenesContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
         {
+            if (forced || currentContext != context)
+            {
+                Instance.LoadContextInternal(context, loadingStrategy);
+            }
+        }
+
+        private void LoadContextInternal(ScenesContext context, LoadingStrategy loadingStrategy)
+        {
+            if (loadingStrategy == null)
+                loadingStrategy = Settings.LoadingStrategy;
+
             if (isLoading)
             {
                 Debug.LogError("Loading Manager is already loading a context!");
