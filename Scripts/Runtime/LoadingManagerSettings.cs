@@ -6,6 +6,7 @@ namespace Bipolar.SceneManagement
     public sealed class GlobalScenesContext
     {
         [SerializeField]
+        [Tooltip("If false: init scene will be always loaded. If true: global context scenes will be always loaded")]
         private bool useGlobalScenesContext;
         public bool UseGlobalScenesContext => useGlobalScenesContext;
 
@@ -29,7 +30,6 @@ namespace Bipolar.SceneManagement
 
         [Space]
         [SerializeField]
-        [Tooltip("If false: scene with build index 0 will be always loaded. If true: global context scenes will be always loaded")]
         private GlobalScenesContext globalScenesContext;
 
         private void Reset()
