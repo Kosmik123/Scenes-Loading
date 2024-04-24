@@ -137,8 +137,6 @@ namespace Bipolar.SceneManagement
             progress = 0;
 
             OnLoadingStarted?.Invoke();
-
-
             currentContext = context;
 
             var scenesToUnload = new List<Scene>();
@@ -168,7 +166,7 @@ namespace Bipolar.SceneManagement
                 };
             }
 
-            int activeSceneIndex = scenesToLoadIndices.Count == 0 ? 0 : scenesToLoadIndices[0];
+            int activeSceneIndex = scenesToLoadIndices.Count == 0 ? 0 : currentContext.Scenes[0].BuildIndex;
             StartCoroutine(LoadingProcessCo(activeSceneIndex));
 
             return true;
@@ -218,7 +216,6 @@ namespace Bipolar.SceneManagement
             }
         }
 
-
         private IEnumerator LoadingProcessCo(int activeSceneIndex)
         {
             yield return LoadScenesFromDisk();
@@ -228,7 +225,16 @@ namespace Bipolar.SceneManagement
             initializers.Clear();
             progress = 1;
             OnLoadingProgressChanged?.Invoke(progress);
-            
+
+            for (int i = 0; i < currentlyLoadedScenes.Count; i++)
+            {
+                if (currentlyLoadedScenes[i].buildIndex == activeSceneIndex)
+                {
+                    SceneManager.SetActiveScene(currentlyLoadedScenes[i]);
+                    break;
+                }
+            }
+
             isLoading = false;
             OnLoadingEnded?.Invoke();
         }
