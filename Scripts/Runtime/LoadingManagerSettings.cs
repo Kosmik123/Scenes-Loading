@@ -20,17 +20,21 @@ namespace Bipolar.SceneManagement
     {
         public const string AssetName = "Loading Manager Settings";
 
-        [Space, SerializeField]
-        private ScenesContext initialScenesContext;
-        public ScenesContext InitialScenesContext => initialScenesContext;
-
-        [SerializeField]
-        private LoadingStrategy loadingStrategy;
-        public LoadingStrategy LoadingStrategy => loadingStrategy;  
-
         [Space]
         [SerializeField]
-        private GlobalScenesContext globalScenesContext;
+        [Tooltip("If not set: default loading strategy will be used.\nIf set: specified loading strategy will be used. ")]
+        private Optional<LoadingStrategy> loadingStrategy;
+        public LoadingStrategy LoadingStrategy => loadingStrategy;
+
+        [SerializeField]
+        [Tooltip("If not set: init scene will be always loaded.\nIf set: global context scenes will be always loaded.")]
+        private Optional<ScenesContext> globalScenesContext;
+        public ScenesContext GlobalScenesContext => globalScenesContext;
+
+        [SerializeField]
+        [Tooltip("If not set: no context will be loaded on game start.\nIf set: starting context will be loaded on game start.")]
+        private Optional<ScenesContext> startingScenesContext;
+        public ScenesContext StartingScenesContext => startingScenesContext;
 
         private void Reset()
         {
@@ -43,5 +47,28 @@ namespace Bipolar.SceneManagement
             }
 #endif
         }
+    }
+
+    [System.Serializable]
+    public class Optional<T>
+        where T : class
+    {
+        [SerializeField]
+        private bool use;
+
+        [SerializeField]
+        private T value;
+        public T Value
+        {
+            get => use ? value : default;
+            set
+            {
+                this.value = value;
+                use = value != default;
+            }
+        }
+
+        public static implicit operator T(Optional<T> optional) => optional.Value;
+        public static implicit operator Optional<T>(T optionalValue) => new Optional<T> { Value = optionalValue };
     }
 }

@@ -89,9 +89,9 @@ namespace Bipolar.SceneManagement
             }
             else if (SceneManager.sceneCount == 1) // starting from InitScene
             {
-                if (Settings && Settings.InitialScenesContext)
+                if (Settings && Settings.StartingScenesContext)
                 {
-                    LoadContext(Settings.InitialScenesContext, forced: true);
+                    LoadContext(Settings.StartingScenesContext, forced: true);
                 }
                 else
                 {
