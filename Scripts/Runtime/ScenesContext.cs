@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -30,7 +29,7 @@ namespace Bipolar.SceneManagement
     }
 
     [CreateAssetMenu(menuName = CreateAssetPath.Root + "Scenes Context", order = 2)]
-    public class ScenesContext : ScriptableObject 
+    public class ScenesContext : ScriptableObject
     {
 #if UNITY_EDITOR
         [SerializeField]
@@ -43,13 +42,14 @@ namespace Bipolar.SceneManagement
             get
             {
 #if UNITY_EDITOR
-                if (scenesData == null || scenesData.Length != scenes.Length) 
+                if (scenesData == null || scenesData.Length != scenes.Length)
                     SerializeScenesIndices();
 #endif
                 return scenesData;
             }
         }
-#region Editor Code
+
+        #region Editor Code
 #if UNITY_EDITOR
         [ContextMenu("Validate Scenes")]
         public void SerializeScenesIndices()
@@ -94,6 +94,20 @@ namespace Bipolar.SceneManagement
             }
         }
 
+        private const string LoadContextAssetsMenuItemName = "Assets/Load Context";
+
+        [UnityEditor.MenuItem(LoadContextAssetsMenuItemName)]
+        private static void LoadContextFromAssetsWindow()
+        {
+            if (UnityEditor.Selection.activeObject is ScenesContext scenesContext)
+            {
+                scenesContext.LoadContextInEditor();
+            }
+        }
+
+        [UnityEditor.MenuItem(LoadContextAssetsMenuItemName, isValidateFunction: true)]
+        private static bool LoadContextFromAssetsWindowValidation() => UnityEditor.Selection.activeObject is ScenesContext;
+
         [ContextMenu("Load Context")]
         internal void LoadContextInEditor()
         {
@@ -101,14 +115,14 @@ namespace Bipolar.SceneManagement
             {
                 this.LoadContext();
             }
-            else 
+            else
             {
                 int loadedScenesCount = SceneManager.sceneCount;
-                var scenesToUnload  = new List<Scene>();
+                var scenesToUnload = new List<Scene>();
                 for (int i = 0; i < loadedScenesCount; i++)
                     scenesToUnload.Add(SceneManager.GetSceneAt(i));
 
-                var scenesToLoadIndices  = new List<int>();
+                var scenesToLoadIndices = new List<int>();
                 int scenesToLoadCount = Scenes.Count;
                 for (int i = 0; i < scenesToLoadCount; i++)
                 {
@@ -146,28 +160,14 @@ namespace Bipolar.SceneManagement
             }
 #endif
         }
-#endregion
+        #endregion
     }
 
     public static class ScenesContextExtensions
     {
-        private const string LoadContextAssetsMenuItemName = "Assets/Load Context";
-
         public static void LoadContext(this ScenesContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
         {
             LoadingManager.Instance.LoadContext(context, loadingStrategy, forced);
         }
-
-        [MenuItem(LoadContextAssetsMenuItemName)]
-        private static void LoadContextFromAssetsWindow()
-        {
-            if (Selection.activeObject is ScenesContext scenesContext)
-            {
-                scenesContext.LoadContextInEditor();
-            }
-        }
-
-        [MenuItem(LoadContextAssetsMenuItemName, isValidateFunction: true)]
-        private static bool LoadContextFromAssetsWindowValidation() => Selection.activeObject is ScenesContext;
     }
 }
