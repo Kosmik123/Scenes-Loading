@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -94,7 +95,7 @@ namespace Bipolar.SceneManagement
         }
 
         [ContextMenu("Load Context")]
-        private void LoadContextInEditor()
+        internal void LoadContextInEditor()
         {
             if (Application.isPlaying)
             {
@@ -150,9 +151,23 @@ namespace Bipolar.SceneManagement
 
     public static class ScenesContextExtensions
     {
+        private const string LoadContextAssetsMenuItemName = "Assets/Load Context";
+
         public static void LoadContext(this ScenesContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
         {
             LoadingManager.Instance.LoadContext(context, loadingStrategy, forced);
         }
+
+        [MenuItem(LoadContextAssetsMenuItemName)]
+        private static void LoadContextFromAssetsWindow()
+        {
+            if (Selection.activeObject is ScenesContext scenesContext)
+            {
+                scenesContext.LoadContextInEditor();
+            }
+        }
+
+        [MenuItem(LoadContextAssetsMenuItemName, isValidateFunction: true)]
+        private static bool LoadContextFromAssetsWindowValidation() => Selection.activeObject is ScenesContext;
     }
 }
