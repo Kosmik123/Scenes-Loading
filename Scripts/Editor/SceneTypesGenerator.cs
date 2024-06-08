@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace Bipolar.SceneManagement.Editor
 {
-    [InitializeOnLoad]
+    //[InitializeOnLoad]
     public class SceneTypesGenerator
     {
         private const string sceneIndexFileDirectory = "Assets";
@@ -117,6 +117,8 @@ namespace Bipolar.SceneManagement.Editor
                 if (i == pathDirectories.Length - 1)
                 {
                     string sceneName = pathDirectories[i];
+                    if (sceneName.Length < 6)
+                        continue;
                     sceneName = sceneName.Substring(0, sceneName.Length - 6);
                     classTree.Scenes.Add((sceneName, currentSceneBuildIndex++));
                 }
