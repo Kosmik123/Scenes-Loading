@@ -84,7 +84,8 @@ namespace Bipolar.SceneManagement
             {
                 SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive).completed += operation =>
                 {
-                    currentlyLoadedScenes.Add(SceneManager.GetSceneAt(SceneManager.loadedSceneCount - 1));
+                    int loadedSceneCount = GetFullyLoadedScenesCount();
+                    currentlyLoadedScenes.Add(SceneManager.GetSceneAt(loadedSceneCount - 1));
                 };
             }
             else if (SceneManager.sceneCount == 1) // starting from InitScene
@@ -101,6 +102,19 @@ namespace Bipolar.SceneManagement
                 }
             }
             OnInstanceCreated = null;
+        }
+
+        private int GetFullyLoadedScenesCount()
+        {
+#if UNITY_2022_2_OR_NEWER
+            return SceneManager.loadedSceneCount;
+#else
+            int count = 0;
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+                if (SceneManager.GetSceneAt(i).isLoaded)
+                    count++;
+            return count;
+#endif
         }
 
         public bool IsInitSceneLoaded()
