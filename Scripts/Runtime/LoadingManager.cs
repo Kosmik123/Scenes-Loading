@@ -68,6 +68,7 @@ namespace Bipolar.SceneManagement
             else if (Instance != this)
             {
                 Destroy(gameObject);
+                return;
             }
 
             for (int i = 0; i < SceneManager.sceneCount; i++)
@@ -136,16 +137,17 @@ namespace Bipolar.SceneManagement
 
         private bool LoadContextInternal(ScenesContext context, LoadingStrategy loadingStrategy)
         {
+            enabled = true;
+            if (isLoading)
+            {
+                Debug.LogWarning("Loading Manager is already loading a context!");
+                return false;
+            }
+
             if (loadingStrategy == null && Settings)
                 loadingStrategy = Settings.LoadingStrategy;
             if (loadingStrategy == null)
                 loadingStrategy = DefaultLoadingStrategy.Instance;
-
-            if (isLoading)
-            {
-                Debug.LogError("Loading Manager is already loading a context!");
-                return false;
-            }
 
             isLoading = true;
             progress = 0;
@@ -205,7 +207,7 @@ namespace Bipolar.SceneManagement
             OnLoadingEnded?.Invoke();
         }
 
-        private void GetScenesToUnload(ScenesContext newContext, List<Scene> scenesToUnload, List<int> scenesToLoadIndices)
+        private void GetScenesToUnload(ScenesContext newContext, List<Scene> scenesToUnload, IList<int> scenesToLoadIndices)
         {
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {

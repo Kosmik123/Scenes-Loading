@@ -12,7 +12,7 @@ namespace Bipolar.SceneManagement.Editor
         {
             string filter = $"t {typeof(ScenesContext).Name}";
             var allContextsGuids = AssetDatabase.FindAssets(filter);
-            foreach (var guid in  allContextsGuids)
+            foreach (var guid in allContextsGuids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var scenesContext = AssetDatabase.LoadAssetAtPath<ScenesContext>(path);

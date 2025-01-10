@@ -29,7 +29,7 @@ namespace Bipolar.SceneManagement
         [SerializeField]
         [Tooltip("If not set: init scene will be always loaded.\nIf set: global context scenes will be always loaded.")]
         private Optional<ScenesContext> globalScenesContext;
-        public ScenesContext GlobalScenesContext => globalScenesContext;
+        public ScenesContext GlobalScenesContext => globalScenesContext; // TODO: implement
 
         [SerializeField]
         [Tooltip("If not set: no context will be loaded on game start.\nIf set: starting context will be loaded on game start.")]
@@ -57,14 +57,14 @@ namespace Bipolar.SceneManagement
         private bool use;
 
         [SerializeField]
-        private T value;
+        private T _value;
         public T Value
         {
-            get => use ? value : default;
+            get => use ? _value : default;
             set
             {
-                this.value = value;
-                use = value != default;
+                _value = value;
+                use = value != null;
             }
         }
 

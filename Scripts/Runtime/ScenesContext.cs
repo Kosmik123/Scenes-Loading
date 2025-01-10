@@ -55,7 +55,7 @@ namespace Bipolar.SceneManagement
         public void SerializeScenesIndices()
         {
             var scenesList = new List<SceneReference>(scenes);
-            var sceneDatasList = new List<SceneData>();
+            var sceneDataList = new List<SceneData>();
 
             for (int i = scenesList.Count - 1; i >= 0; i--)
             {
@@ -78,13 +78,13 @@ namespace Bipolar.SceneManagement
                     continue;
                 }
 
-                sceneDatasList.Add(new SceneData(buildIndex/*, data.LocalPhysicsMode */));
+                sceneDataList.Add(new SceneData(buildIndex/*, data.LocalPhysicsMode */));
             }
 
-            sceneDatasList.Reverse();
+            sceneDataList.Reverse();
 
             scenes = scenesList.ToArray();
-            scenesData = sceneDatasList.ToArray();
+            scenesData = sceneDataList.ToArray();
 
             static int GetSceneIndex(UnityEditor.SceneAsset scene)
             {

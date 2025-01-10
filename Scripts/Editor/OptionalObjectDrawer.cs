@@ -18,7 +18,7 @@ namespace Bipolar.SceneManagement.Editor
         {
             EditorGUI.BeginProperty(rect, label, property);
             var useProperty = property.FindPropertyRelative("use");
-            var valueProperty = property.FindPropertyRelative("value");
+            var valueProperty = property.FindPropertyRelative("_value");
 
             float labelWidth = EditorGUIUtility.labelWidth;
             var labelRect = rect;
