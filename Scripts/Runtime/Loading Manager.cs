@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Bipolar.SceneManagement.Core;
-using NaughtyAttributes;
 
 namespace Bipolar.SceneManagement
 {
     public delegate void ContextLoadingEventHandler(ScenesContext context);
 
+    [AddComponentMenu("")]
     public sealed class LoadingManager : MonoBehaviour
     {
         public static event System.Action OnLoadingStarted;
@@ -20,20 +20,32 @@ namespace Bipolar.SceneManagement
         public static LoadingManager Instance { get; private set; }
         public LoadingManagerSettings Settings { get; private set; }
 
-        [SerializeField, ReadOnly]
-        private bool isLoading;
+		[SerializeField]
+#if NAUGHTY_ATTRIBUTES
+        [NaughtyAttributes.ReadOnly] 
+#endif
+		private bool isLoading;
         public bool IsLoading => isLoading;
 
-        [SerializeField, ReadOnly]
-        private float progress;
+        [SerializeField]
+#if NAUGHTY_ATTRIBUTES
+        [NaughtyAttributes.ReadOnly] 
+#endif
+		private float progress;
         public static float Progress => Instance == null ? 0 : Instance.progress;
 
-        [SerializeField, ReadOnly]
-        private ScenesContext currentContext;
+		[SerializeField]
+#if NAUGHTY_ATTRIBUTES
+        [NaughtyAttributes.ReadOnly] 
+#endif
+		private ScenesContext currentContext;
         public ScenesContext CurrentContext => currentContext;
 
-        [SerializeField, ReadOnly]
-        private List<Scene> currentlyLoadedScenes = new List<Scene>();
+		[SerializeField]
+#if NAUGHTY_ATTRIBUTES
+        [NaughtyAttributes.ReadOnly] 
+#endif
+		private List<Scene> currentlyLoadedScenes = new List<Scene>();
 
         // should this be in a different class?
         private readonly List<AsyncOperation> sceneLoadOperations = new List<AsyncOperation>();
@@ -321,7 +333,6 @@ namespace Bipolar.SceneManagement
 
             initializers.Add(initializer);
         }
-
     }
 
     public static class SceneExtensions
