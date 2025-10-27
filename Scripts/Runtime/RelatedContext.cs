@@ -29,7 +29,7 @@ namespace Bipolar.SceneManagement
             LoadingManager.OnInstanceCreated -= LoadContext;
             LoadingManager.OnLoadingEnded -= LoadContext;
             if (context)
-                LoadingManager.Instance.LoadContext(context);
+                LoadingManager.LoadContext(context, forced: true);
         }
     } 
 }

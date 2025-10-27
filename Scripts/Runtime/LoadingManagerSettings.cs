@@ -15,7 +15,7 @@ namespace Bipolar.SceneManagement
         public ScenesContext Context => context;
     }
 
-    [CreateAssetMenu(menuName = CreateAssetPath.Root + AssetName, fileName = AssetName)]
+    [CreateAssetMenu(menuName = Paths.Root + AssetName, fileName = AssetName)]
     public sealed class LoadingManagerSettings : ScriptableObject
     {
         public const string AssetName = "Loading Manager Settings";
@@ -44,6 +44,18 @@ namespace Bipolar.SceneManagement
             {
                 var defaultStrategyPath = UnityEditor.AssetDatabase.GUIDToAssetPath(loadingStrategiesGuids[0]);
                 loadingStrategy = UnityEditor.AssetDatabase.LoadAssetAtPath<LoadingStrategy>(defaultStrategyPath);
+            }
+#endif
+        }
+
+        private void OnValidate()
+        {
+#if UNITY_EDITOR
+            if (name != AssetName)
+            {
+                name = AssetName;
+                UnityEditor.AssetDatabase.RenameAsset(UnityEditor.AssetDatabase.GetAssetPath(this), AssetName);
+                UnityEditor.EditorUtility.SetDirty(this);
             }
 #endif
         }

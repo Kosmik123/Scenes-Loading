@@ -32,7 +32,7 @@ namespace Bipolar.SceneManagement
         [NaughtyAttributes.ReadOnly] 
 #endif
 		private float progress;
-        public static float Progress => Instance == null ? 0 : Instance.progress;
+        public static float Progress => Instance ? Instance.progress : 0;
 
 		[SerializeField]
 #if NAUGHTY_ATTRIBUTES
@@ -54,7 +54,7 @@ namespace Bipolar.SceneManagement
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void CreateLoadingManager()
         {
-            var settingsRequest = Resources.LoadAsync(LoadingManagerSettings.AssetName);
+            var settingsRequest = Resources.LoadAsync<LoadingManagerSettings>(LoadingManagerSettings.AssetName);
             settingsRequest.completed += operation =>
             {
                 var loadingManager = new GameObject().AddComponent<LoadingManager>();
@@ -72,10 +72,7 @@ namespace Bipolar.SceneManagement
         {
             if (Instance == null)
             {
-                Instance = this;
-                isLoading = false;
-                progress = 1;
-                DontDestroyOnLoad(this);
+                MakeSingleton();
             }
             else if (Instance != this)
             {
@@ -89,6 +86,14 @@ namespace Bipolar.SceneManagement
                 if (scene.isLoaded)
                     currentlyLoadedScenes.Add(scene);
             }
+        }
+
+        private void MakeSingleton()
+        {
+            Instance = this;
+            isLoading = false;
+            progress = 1;
+            DontDestroyOnLoad(this);
         }
 
         private void Start()
@@ -139,9 +144,9 @@ namespace Bipolar.SceneManagement
             return false;
         }
 
-        public bool LoadContext(ScenesContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
+        public static bool LoadContext(ScenesContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
         {
-            if (forced == false && currentContext == context)
+            if (forced == false && Instance.currentContext == context)
                 return false;
 
             return Instance.LoadContextInternal(context, loadingStrategy);
@@ -194,7 +199,7 @@ namespace Bipolar.SceneManagement
                 };
             }
 
-            int activeSceneIndex = scenesToLoadIndices.Count == 0 ? 0 : currentContext.Scenes[0].BuildIndex;
+            int activeSceneIndex = currentContext.Scenes[0].BuildIndex;
             StartCoroutine(LoadingProcessCo(activeSceneIndex));
 
             return true;
@@ -225,7 +230,7 @@ namespace Bipolar.SceneManagement
             {
                 var scene = SceneManager.GetSceneAt(i);
                 int buildIndex = scene.buildIndex;
-                if (buildIndex > 0)
+                if (buildIndex >= 0)
                     scenesToUnload.Add(scene);
             }
 

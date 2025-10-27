@@ -4,6 +4,14 @@ using UnityEngine.SceneManagement;
 
 namespace Bipolar.SceneManagement.Editor
 {
+    public class ScenesContextEditor : UnityEditor.Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+        }
+    }
+
     [CustomPropertyDrawer(typeof(SceneReference))]
     public class SceneReferenceDrawer : PropertyDrawer
     {
@@ -89,6 +97,7 @@ namespace Bipolar.SceneManagement.Editor
                     }
                     else if (sceneIndex == 0)
                     {
+                        // this will not be error anymore
                         rect.height = warningHelpboxHeight;
                         string message = "Scene Build Index = 0. Index 0 is reserved for initial scene which cannot be contained in contexts";
                         EditorGUI.HelpBox(rect, message, MessageType.Error);

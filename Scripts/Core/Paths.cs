@@ -1,6 +1,6 @@
 ﻿namespace Bipolar.SceneManagement
 {
-    public static class CreateAssetPath
+    public static class Paths
     {
         public const string Root = "Bipolar Scene Management/";
     }
