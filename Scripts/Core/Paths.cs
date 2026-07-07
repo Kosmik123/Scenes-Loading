@@ -2,6 +2,6 @@
 {
     public static class Paths
     {
-        public const string Root = "Bipolar Scene Management/";
+        public const string Root = "Bipolar/Scene Management/";
     }
 }

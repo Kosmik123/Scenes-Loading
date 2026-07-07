@@ -62,7 +62,7 @@ namespace Bipolar.SceneManagement
     }
 
     [System.Serializable]
-    public class Optional<T>
+    public struct Optional<T>
         where T : class
     {
         [SerializeField]
@@ -72,7 +72,7 @@ namespace Bipolar.SceneManagement
         private T _value;
         public T Value
         {
-            get => use ? _value : default;
+            readonly get => use ? _value : default;
             set
             {
                 _value = value;

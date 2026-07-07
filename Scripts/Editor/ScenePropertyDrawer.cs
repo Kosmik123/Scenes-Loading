@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace Bipolar.SceneManagement.Editor
 {
-    [CustomPropertyDrawer(typeof(Scene))]
+    //[CustomPropertyDrawer(typeof(Scene))]
     public class ScenePropertyDrawer : PropertyDrawer
     {
         private const string SceneHandlePropertyName = "m_Handle";
@@ -16,7 +16,7 @@ namespace Bipolar.SceneManagement.Editor
         {
             var sceneHandleProperty = property.FindPropertyRelative(SceneHandlePropertyName);
             int sceneHandle = sceneHandleProperty.intValue;
-            var sceneName = GetNameMethodInfo.Invoke(default, new object[] { sceneHandle }) as string;
+            var sceneName = sceneHandle != 0 ? GetNameMethodInfo.Invoke(default, new object[] { sceneHandle }) as string : "None";
             EditorGUI.LabelField(position, sceneName);    
         }
     }
