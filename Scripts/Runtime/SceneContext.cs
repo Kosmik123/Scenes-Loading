@@ -28,8 +28,8 @@ namespace Bipolar.SceneManagement
         }
     }
 
-    [CreateAssetMenu(menuName = Paths.Root + "Scenes Context", order = 2)]
-    public class ScenesContext : ScriptableObject
+    [CreateAssetMenu(menuName = Paths.Root + "Scene Context", order = 2)]
+    public class SceneContext : ScriptableObject
     {
         //[SerializeField]
         //private ScenesContext baseScenesContext;
@@ -101,14 +101,14 @@ namespace Bipolar.SceneManagement
         [UnityEditor.MenuItem(LoadContextAssetsMenuItemName)]
         private static void LoadContextFromAssetsWindow()
         {
-            if (UnityEditor.Selection.activeObject is ScenesContext scenesContext)
+            if (UnityEditor.Selection.activeObject is SceneContext scenesContext)
             {
                 scenesContext.LoadContextInEditor();
             }
         }
 
         [UnityEditor.MenuItem(LoadContextAssetsMenuItemName, isValidateFunction: true)]
-        private static bool LoadContextFromAssetsWindowValidation() => UnityEditor.Selection.activeObject is ScenesContext;
+        private static bool LoadContextFromAssetsWindowValidation() => UnityEditor.Selection.activeObject is SceneContext;
 
         [ContextMenu("Load Context")]
         internal void LoadContextInEditor()
@@ -167,7 +167,7 @@ namespace Bipolar.SceneManagement
 
     public static class ScenesContextExtensions
     {
-        public static void LoadContext(this ScenesContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
+        public static void LoadContext(this SceneContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
         {
             LoadingManager.LoadContext(context, loadingStrategy, forced);
         }

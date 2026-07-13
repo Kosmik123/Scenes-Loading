@@ -10,12 +10,12 @@ namespace Bipolar.SceneManagement.Editor
 
         public void OnPreprocessBuild(BuildReport report)
         {
-            string filter = $"t:{typeof(ScenesContext).Name}";
+            string filter = $"t:{typeof(SceneContext).Name}";
             var allContextsGuids = AssetDatabase.FindAssets(filter);
             foreach (var guid in allContextsGuids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var scenesContext = AssetDatabase.LoadAssetAtPath<ScenesContext>(path);
+                var scenesContext = AssetDatabase.LoadAssetAtPath<SceneContext>(path);
                 if (scenesContext)
                     scenesContext.SerializeScenesIndices();
             }

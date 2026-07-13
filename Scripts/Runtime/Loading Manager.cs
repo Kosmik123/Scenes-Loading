@@ -6,7 +6,7 @@ using Bipolar.SceneManagement.Core;
 
 namespace Bipolar.SceneManagement
 {
-    public delegate void ContextLoadingEventHandler(ScenesContext context);
+    public delegate void ContextLoadingEventHandler(SceneContext context);
 
     [AddComponentMenu("")]
     public sealed class LoadingManager : MonoBehaviour
@@ -38,8 +38,8 @@ namespace Bipolar.SceneManagement
 #if NAUGHTY_ATTRIBUTES
         [NaughtyAttributes.ReadOnly] 
 #endif
-		private ScenesContext currentContext;
-        public ScenesContext CurrentContext => currentContext;
+		private SceneContext currentContext;
+        public SceneContext CurrentContext => currentContext;
 
 		[SerializeField]
 #if NAUGHTY_ATTRIBUTES
@@ -144,7 +144,7 @@ namespace Bipolar.SceneManagement
             return false;
         }
 
-        public static bool LoadContext(ScenesContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
+        public static bool LoadContext(SceneContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
         {
             if (forced == false && Instance.currentContext == context)
                 return false;
@@ -152,7 +152,7 @@ namespace Bipolar.SceneManagement
             return Instance.LoadContextInternal(context, loadingStrategy);
         }
 
-        private bool LoadContextInternal(ScenesContext context, LoadingStrategy loadingStrategy)
+        private bool LoadContextInternal(SceneContext context, LoadingStrategy loadingStrategy)
         {
             enabled = true;
             if (isLoading)
@@ -205,7 +205,7 @@ namespace Bipolar.SceneManagement
             return true;
         }
 
-        private IEnumerator LoadContextUsingStrategy(ScenesContext context, LoadingStrategy strategy)
+        private IEnumerator LoadContextUsingStrategy(SceneContext context, LoadingStrategy strategy)
         {
             progress = 0;
             isLoading = true;
@@ -224,7 +224,7 @@ namespace Bipolar.SceneManagement
             OnLoadingEnded?.Invoke();
         }
 
-        private void GetScenesToUnload(ScenesContext newContext, List<Scene> scenesToUnload, IList<int> scenesToLoadIndices)
+        private void GetScenesToUnload(SceneContext newContext, List<Scene> scenesToUnload, IList<int> scenesToLoadIndices)
         {
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {

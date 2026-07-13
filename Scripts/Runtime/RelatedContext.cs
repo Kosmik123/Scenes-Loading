@@ -6,7 +6,7 @@ namespace Bipolar.SceneManagement
     public class RelatedContext : MonoBehaviour
     {
         [SerializeField]
-        private ScenesContext context;
+        private SceneContext context;
 
         private void Awake()
         {

@@ -11,8 +11,8 @@ namespace Bipolar.SceneManagement
         public bool UseGlobalScenesContext => useGlobalScenesContext;
 
         [SerializeField]
-        private ScenesContext context;
-        public ScenesContext Context => context;
+        private SceneContext context;
+        public SceneContext Context => context;
     }
 
     [CreateAssetMenu(menuName = Paths.Root + AssetName, fileName = AssetName)]
@@ -28,13 +28,13 @@ namespace Bipolar.SceneManagement
 
         [SerializeField]
         [Tooltip("If not set: init scene will be always loaded.\nIf set: global context scenes will be always loaded.")]
-        private Optional<ScenesContext> globalScenesContext;
-        public ScenesContext GlobalScenesContext => globalScenesContext; // TODO: implement
+        private Optional<SceneContext> globalScenesContext;
+        public SceneContext GlobalScenesContext => globalScenesContext; // TODO: implement
 
         [SerializeField]
         [Tooltip("If not set: no context will be loaded on game start.\nIf set: starting context will be loaded on game start.")]
-        private Optional<ScenesContext> startingScenesContext;
-        public ScenesContext StartingScenesContext => startingScenesContext;
+        private Optional<SceneContext> startingScenesContext;
+        public SceneContext StartingScenesContext => startingScenesContext;
 
         private void Reset()
         {

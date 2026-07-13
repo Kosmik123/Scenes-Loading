@@ -5,14 +5,14 @@ namespace Bipolar.SceneManagement
 {
     public abstract class LoadingStrategy : ScriptableObject
     {
-        public abstract IEnumerable<float> LoadContext(ScenesContext context);
+        public abstract IEnumerable<float> LoadContext(SceneContext context);
     }
 
     public class DefaultLoadingStrategy : LoadingStrategy
     {
         public static DefaultLoadingStrategy Instance { get; } = CreateInstance<DefaultLoadingStrategy>();
 
-        public override IEnumerable<float> LoadContext(ScenesContext context)
+        public override IEnumerable<float> LoadContext(SceneContext context)
         {
             foreach (var progress in LoadScenesFromDisk(context))
                 yield return progress;
@@ -23,7 +23,7 @@ namespace Bipolar.SceneManagement
                 yield return progress;
         }
 
-        public static IEnumerable<float> LoadScenesFromDisk(ScenesContext context)
+        public static IEnumerable<float> LoadScenesFromDisk(SceneContext context)
         {
             yield return default;
 
