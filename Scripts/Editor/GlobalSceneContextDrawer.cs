@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Bipolar.SceneManagement.Editor
 {
-    [CustomPropertyDrawer(typeof(GlobalScenesContext))]
-    public class GlobalScenesContextDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(GlobalSceneContext))]
+    public class GlobalSceneContextDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {

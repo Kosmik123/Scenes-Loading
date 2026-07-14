@@ -32,7 +32,7 @@ namespace Bipolar.SceneManagement
     public class SceneContext : ScriptableObject
     {
         //[SerializeField]
-        //private ScenesContext baseScenesContext;
+        //private SceneContext baseSceneContext;
 
 #if UNITY_EDITOR
         [SerializeField]
@@ -115,7 +115,7 @@ namespace Bipolar.SceneManagement
         {
             if (Application.isPlaying)
             {
-                this.LoadContext();
+                this.Load();
             }
             else
             {
@@ -167,9 +167,9 @@ namespace Bipolar.SceneManagement
 
     public static class ScenesContextExtensions
     {
-        public static void LoadContext(this SceneContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
+        public static void Load(this SceneContext context, LoadingStrategy overwriteStrategy = null, bool forced = false)
         {
-            LoadingManager.LoadContext(context, loadingStrategy, forced);
+            LoadingManager.LoadContext(context, overwriteStrategy, forced);
         }
     }
 }

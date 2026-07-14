@@ -3,7 +3,7 @@
 namespace Bipolar.SceneManagement
 {
     [System.Serializable]
-    public sealed class GlobalScenesContext
+    public sealed class GlobalSceneContext
     {
         [SerializeField]
         [Tooltip("If false: init scene will be always loaded. If true: global context scenes will be always loaded")]
@@ -16,9 +16,9 @@ namespace Bipolar.SceneManagement
     }
 
     [CreateAssetMenu(menuName = Paths.Root + AssetName, fileName = AssetName)]
-    public sealed class LoadingManagerSettings : ScriptableObject
+    public sealed class LoadingSettings : ScriptableObject
     {
-        public const string AssetName = "Loading Manager Settings";
+        public const string AssetName = "Loading Settings";
 
         [Space]
         [SerializeField]
@@ -34,7 +34,46 @@ namespace Bipolar.SceneManagement
         [SerializeField]
         [Tooltip("If not set: no context will be loaded on game start.\nIf set: starting context will be loaded on game start.")]
         private Optional<SceneContext> startingScenesContext;
-        public SceneContext StartingScenesContext => startingScenesContext;
+
+        public SceneContext StartingScenesContext
+        {
+            get => startingScenesContext;
+#if UNITY_EDITOR
+            set => startingScenesContext = value;
+#endif
+        }
+
+        private static LoadingSettings instance;
+        public static LoadingSettings Instance => instance;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void CreateLoadingSettingsInstance()
+        {
+            if (Application.isPlaying == false)
+                return;
+
+            if (instance == null)
+            {
+                Debug.Log("LoadingSetting missing. Loading from Resources");
+                var settingsRequest = Resources.LoadAsync<LoadingSettings>(AssetName);
+                if (settingsRequest != null)
+                {
+                    settingsRequest.completed += operation =>
+                    {
+                        if (settingsRequest.asset is LoadingSettings settings)
+                        {
+                            instance = settings;
+                        }
+                    };
+                }
+                else
+                {
+                    Debug.Log("No LoadingSettings in Resources. Creating empty settings");
+                    instance = CreateInstance<LoadingSettings>();
+                    instance.name = AssetName;
+                }
+            }
+        }
 
         private void Reset()
         {
@@ -46,6 +85,19 @@ namespace Bipolar.SceneManagement
                 loadingStrategy = UnityEditor.AssetDatabase.LoadAssetAtPath<LoadingStrategy>(defaultStrategyPath);
             }
 #endif
+        }
+
+        private void OnEnable()
+        {
+            if (Instance == null)
+            {
+                Debug.Log("LoadingSettings loaded");
+                instance = this;
+            }
+            else if (Instance != this)
+            {
+                Destroy(this);
+            }
         }
 
         private void OnValidate()

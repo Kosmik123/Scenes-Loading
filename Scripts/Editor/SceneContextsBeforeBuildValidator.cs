@@ -4,7 +4,7 @@ using UnityEditor.Build.Reporting;
 
 namespace Bipolar.SceneManagement.Editor
 {
-    internal sealed class ScenesContextsBeforeBuildValidator : IPreprocessBuildWithReport
+    internal sealed class SceneContextsBeforeBuildValidator : IPreprocessBuildWithReport
     {
         public int callbackOrder => default;
 

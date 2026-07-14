@@ -1,6 +1,6 @@
 {
     "name": "Bipolar.SceneManagement.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "Bipolar.SceneManagement.Editor",
     "references": [
         "GUID:4f05d8240bce83d47a18b49244510c68"
     ],

@@ -17,35 +17,35 @@ namespace Bipolar.SceneManagement
 
         internal static event System.Action OnInstanceCreated;
 
-        public static LoadingManager Instance { get; private set; }
-        public LoadingManagerSettings Settings { get; private set; }
+        private static LoadingManager instance;
+        public static LoadingManager Instance => instance;
 
-		[SerializeField]
+        [SerializeField]
 #if NAUGHTY_ATTRIBUTES
         [NaughtyAttributes.ReadOnly] 
 #endif
-		private bool isLoading;
+        private bool isLoading;
         public bool IsLoading => isLoading;
 
         [SerializeField]
 #if NAUGHTY_ATTRIBUTES
         [NaughtyAttributes.ReadOnly] 
 #endif
-		private float progress;
+        private float progress;
         public static float Progress => Instance ? Instance.progress : 0;
 
-		[SerializeField]
+        [SerializeField]
 #if NAUGHTY_ATTRIBUTES
         [NaughtyAttributes.ReadOnly] 
 #endif
-		private SceneContext currentContext;
+        private SceneContext currentContext;
         public SceneContext CurrentContext => currentContext;
 
-		[SerializeField]
+        [SerializeField]
 #if NAUGHTY_ATTRIBUTES
         [NaughtyAttributes.ReadOnly] 
 #endif
-		private List<Scene> currentlyLoadedScenes = new List<Scene>();
+        private List<Scene> currentlyLoadedScenes = new List<Scene>();
 
         // should this be in a different class?
         private readonly List<AsyncOperation> sceneLoadOperations = new List<AsyncOperation>();
@@ -54,18 +54,14 @@ namespace Bipolar.SceneManagement
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void CreateLoadingManager()
         {
-            var settingsRequest = Resources.LoadAsync<LoadingManagerSettings>(LoadingManagerSettings.AssetName);
-            settingsRequest.completed += operation =>
-            {
-                var loadingManager = new GameObject().AddComponent<LoadingManager>();
-                loadingManager.name = "Loading Manager";
-                if (settingsRequest.asset is LoadingManagerSettings settings)
-                {
-                    loadingManager.Settings = settings; 
-                }
-                Instance = loadingManager;
-                OnInstanceCreated?.Invoke();
-            };
+            if (Application.isPlaying)
+                return;
+
+            Debug.Log("Creating LoadingManager");
+            if (instance == null)
+                new GameObject("Loading Manager").AddComponent<LoadingManager>();
+
+            OnInstanceCreated?.Invoke();
         }
 
         private void Awake()
@@ -90,7 +86,7 @@ namespace Bipolar.SceneManagement
 
         private void MakeSingleton()
         {
-            Instance = this;
+            instance = this;
             isLoading = false;
             progress = 1;
             DontDestroyOnLoad(this);
@@ -108,9 +104,9 @@ namespace Bipolar.SceneManagement
             }
             else if (SceneManager.sceneCount == 1) // starting from InitScene
             {
-                if (Settings && Settings.StartingScenesContext)
+                if (LoadingSettings.Instance && LoadingSettings.Instance.StartingScenesContext)
                 {
-                    LoadContext(Settings.StartingScenesContext, forced: true);
+                    LoadContext(LoadingSettings.Instance.StartingScenesContext, forced: true);
                 }
                 else
                 {
@@ -144,12 +140,12 @@ namespace Bipolar.SceneManagement
             return false;
         }
 
-        public static bool LoadContext(SceneContext context, LoadingStrategy loadingStrategy = null, bool forced = false)
+        public static bool LoadContext(SceneContext context, LoadingStrategy overwriteStrategy = null, bool forced = false)
         {
             if (forced == false && Instance.currentContext == context)
                 return false;
 
-            return Instance.LoadContextInternal(context, loadingStrategy);
+            return Instance.LoadContextInternal(context, overwriteStrategy);
         }
 
         private bool LoadContextInternal(SceneContext context, LoadingStrategy loadingStrategy)
@@ -161,10 +157,10 @@ namespace Bipolar.SceneManagement
                 return false;
             }
 
-            if (loadingStrategy == null && Settings)
-                loadingStrategy = Settings.LoadingStrategy;
+            if (loadingStrategy == null && LoadingSettings.Instance)
+                loadingStrategy = LoadingSettings.Instance.LoadingStrategy;
             if (loadingStrategy == null)
-                loadingStrategy = DefaultLoadingStrategy.Instance;
+                loadingStrategy = LoadingStrategy.Default;
 
             isLoading = true;
             progress = 0;
@@ -193,7 +189,7 @@ namespace Bipolar.SceneManagement
                 var scene = scenesToUnload[i];
                 var unloadingOperation = SceneManager.UnloadSceneAsync(scene);
                 sceneLoadOperations.Add(unloadingOperation);
-                unloadingOperation.completed += operation => 
+                unloadingOperation.completed += operation =>
                 {
                     currentlyLoadedScenes.Remove(scene);
                 };
@@ -224,13 +220,14 @@ namespace Bipolar.SceneManagement
             OnLoadingEnded?.Invoke();
         }
 
-        private void GetScenesToUnload(SceneContext newContext, List<Scene> scenesToUnload, IList<int> scenesToLoadIndices)
+        private void GetScenesToUnload<TIntList>(SceneContext newContext, List<Scene> scenesToUnload, TIntList scenesToLoadIndices)
+            where TIntList : IList<int>
         {
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
                 int buildIndex = scene.buildIndex;
-                if (buildIndex >= 0)
+                if (buildIndex > 0) // greater than 0, because currently Init scene will be always loaded (it probably change in the future)
                     scenesToUnload.Add(scene);
             }
 
@@ -272,7 +269,7 @@ namespace Bipolar.SceneManagement
             OnLoadingEnded?.Invoke();
         }
 
-        private IEnumerable LoadScenesFromDisk()
+        private IEnumerator LoadScenesFromDisk()
         {
             bool isDone = false;
             while (isDone == false)
