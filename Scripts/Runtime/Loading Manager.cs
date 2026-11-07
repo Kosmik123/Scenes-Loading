@@ -54,9 +54,6 @@ namespace Bipolar.SceneManagement
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void CreateLoadingManager()
         {
-            if (Application.isPlaying)
-                return;
-
             Debug.Log("Creating LoadingManager");
             if (instance == null)
                 new GameObject("Loading Manager").AddComponent<LoadingManager>();

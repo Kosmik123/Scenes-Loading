@@ -9,12 +9,19 @@ namespace Bipolar.SceneManagement.Editor
     {
         public override void OnInspectorGUI()
         {
-            bool isStartingContext = LoadingSettings.Instance.StartingScenesContext == target;
-            bool isSet = EditorGUILayout.Toggle("Is Starting Context", isStartingContext);
-            if (isSet != isStartingContext)
+            if (LoadingSettings.Instance)
             {
-                LoadingSettings.Instance.StartingScenesContext = (SceneContext)target;
-                EditorUtility.SetDirty(LoadingSettings.Instance);   
+                bool isStartingContext = LoadingSettings.Instance.StartingScenesContext == target;
+                bool isSet = EditorGUILayout.Toggle("Is Starting Context", isStartingContext);
+                if (isSet != isStartingContext)
+                {
+                    LoadingSettings.Instance.StartingScenesContext = (SceneContext)target;
+                    EditorUtility.SetDirty(LoadingSettings.Instance);
+                }
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("LoadingSettings asset is missing", MessageType.Error);
             }
 
             base.OnInspectorGUI();
