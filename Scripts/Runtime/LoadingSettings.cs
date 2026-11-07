@@ -44,7 +44,14 @@ namespace Bipolar.SceneManagement
         }
 
         private static LoadingSettings instance;
-        public static LoadingSettings Instance => instance;
+        public static LoadingSettings Instance
+        {
+            get
+            {
+                EnsureSettingsExist();
+                return instance;
+            }
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void CreateLoadingSettingsInstance()
@@ -52,6 +59,11 @@ namespace Bipolar.SceneManagement
             if (Application.isPlaying == false)
                 return;
 
+            EnsureSettingsExist();
+        }
+
+        private static void EnsureSettingsExist()
+        {
             if (instance == null)
             {
                 Debug.Log("LoadingSetting missing. Loading from Resources");
