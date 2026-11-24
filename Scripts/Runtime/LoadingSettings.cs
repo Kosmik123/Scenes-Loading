@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
+using UnityPipeline.Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Bipolar.SceneManagement
 {
     [CreateAssetMenu(menuName = Paths.Root + AssetName, fileName = AssetName)]
     public sealed class LoadingSettings : ScriptableObject
     {
-        public const string AssetName = "Loading Settings";
+        public const string AssetName = nameof(LoadingSettings);
 
         [Space]
         [SerializeField]
@@ -53,7 +54,7 @@ namespace Bipolar.SceneManagement
         {
             if (instance == null)
             {
-                Debug.Log("LoadingSetting missing. Loading from Resources");
+                Debug.Log(AssetName + " missing. Loading from Resources");
                 var settingsRequest = Resources.LoadAsync<LoadingSettings>(AssetName);
                 if (settingsRequest != null)
                 {
@@ -90,12 +91,15 @@ namespace Bipolar.SceneManagement
         {
             if (Instance == null)
             {
-                Debug.Log("LoadingSettings loaded");
+                Debug.Log(AssetName + " loaded");
                 instance = this;
             }
             else if (Instance != this)
             {
-                Destroy(this);
+                if (Application.isPlaying)
+                    Destroy(this);
+                else
+                    DestroyImmediate(this);
             }
         }
 

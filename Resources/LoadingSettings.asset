@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6f7c807694e1ef49956c140522cef7a, type: 3}
-  m_Name: Loading Settings
+  m_Name: LoadingSettings
   m_EditorClassIdentifier: Bipolar.SceneManagement::Bipolar.SceneManagement.LoadingSettings
   loadingStrategy:
     use: 0
@@ -19,5 +19,5 @@ MonoBehaviour:
     use: 0
     _value: {fileID: 0}
   startingScenesContext:
-    use: 0
-    _value: {fileID: 0}
+    use: 1
+    _value: {fileID: 11400000, guid: 126511bf42314f947a66ecd90058ec22, type: 2}

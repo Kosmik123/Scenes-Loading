@@ -20,11 +20,11 @@ namespace Bipolar.SceneManagement.Editor
         {
             if (LoadingSettings.Instance)
             {
-                bool isStartingContext = LoadingSettings.Instance.StartingScenesContext == target;
-                bool isSet = EditorGUILayout.Toggle("Is Starting Context", isStartingContext);
-                if (isSet != isStartingContext)
+                bool wasStartingContext = LoadingSettings.Instance.StartingScenesContext == target;
+                bool wantsToBeStartingContext = EditorGUILayout.Toggle("Is Starting Context", wasStartingContext);
+                if (wasStartingContext != wantsToBeStartingContext)
                 {
-                    LoadingSettings.Instance.StartingScenesContext = (SceneContext)target;
+                    LoadingSettings.Instance.StartingScenesContext = wantsToBeStartingContext ? (SceneContext)target : null;
                     EditorUtility.SetDirty(LoadingSettings.Instance);
                 }
             }
