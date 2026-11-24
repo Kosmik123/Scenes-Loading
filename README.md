@@ -22,3 +22,12 @@ Bipolar Scene Management also add some features that are often useful while mana
 1) Always loaded main scene which can contain persistent player data
 2) Tracking of scene loading progress (both reading from disk and loading scene subsystems)
 3) Loading screen which is visible while changing scenes (optional feature)
+
+
+## Playing from a scene in the editor
+When you press Play in a scene other than Boot (build index 0), the module loads Boot and then the context that contains the open scene. There is nothing to add to the scene.
+
+- The scene-to-context mapping is derived from the contexts themselves (a context knows its scenes).
+- No context contains the scene: the scene is played as it is, together with Boot.
+- Several contexts contain the scene: your personal choice is used, otherwise the first one by asset path. The console says which one was loaded.
+- To change the choice, select a context and press **Use when playing from its scenes**. The choice is stored in `UserSettings/` (per user, not committed).

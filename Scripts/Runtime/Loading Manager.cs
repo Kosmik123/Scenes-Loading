@@ -97,6 +97,9 @@ namespace Bipolar.SceneManagement
                 {
                     int loadedSceneCount = GetFullyLoadedScenesCount();
                     currentlyLoadedScenes.Add(SceneManager.GetSceneAt(loadedSceneCount - 1));
+#if UNITY_EDITOR
+                    LoadPlayModeContext();
+#endif
                 };
             }
             else if (SceneManager.sceneCount == 1) // starting from InitScene
@@ -114,6 +117,16 @@ namespace Bipolar.SceneManagement
             }
             OnInstanceCreated = null;
         }
+
+#if UNITY_EDITOR
+        // Play mode started from a scene other than Boot: load the context that scene belongs to.
+        private void LoadPlayModeContext()
+        {
+            var context = PlayModeContext.Get();
+            if (context && context.Scenes.Count > 0)
+                LoadContext(context, forced: true);
+        }
+#endif
 
         private int GetFullyLoadedScenesCount()
         {

@@ -54,6 +54,16 @@ namespace Bipolar.SceneManagement
 
         #region Editor Code
 #if UNITY_EDITOR
+        internal IEnumerable<UnityEditor.SceneAsset> GetSceneAssets()
+        {
+            if (scenes == null)
+                yield break;
+
+            foreach (var reference in scenes)
+                if (reference != null && reference.Scene)
+                    yield return reference.Scene;
+        }
+
         [ContextMenu("Validate Scenes")]
         public void SerializeScenesIndices()
         {
