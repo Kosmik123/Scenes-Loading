@@ -2,19 +2,6 @@
 
 namespace Bipolar.SceneManagement
 {
-    [System.Serializable]
-    public sealed class GlobalSceneContext
-    {
-        [SerializeField]
-        [Tooltip("If false: init scene will be always loaded. If true: global context scenes will be always loaded")]
-        private bool useGlobalScenesContext;
-        public bool UseGlobalScenesContext => useGlobalScenesContext;
-
-        [SerializeField]
-        private SceneContext context;
-        public SceneContext Context => context;
-    }
-
     [CreateAssetMenu(menuName = Paths.Root + AssetName, fileName = AssetName)]
     public sealed class LoadingSettings : ScriptableObject
     {
