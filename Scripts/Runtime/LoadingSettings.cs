@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityPipeline.Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Bipolar.SceneManagement
 {
